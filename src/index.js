@@ -9,7 +9,8 @@ import engine from './engine';
 import scene from './scene';
 import court from './court';
 
-const camera = new UniversalCamera('camera', new Vector3(0, 15, -100), scene);
+const camera = new UniversalCamera('camera', new Vector3(0, 120, 0), scene);
+camera.setTarget(Vector3.Zero());
 
 const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
 light.diffuse = new Color3(1, 1, 1);
