@@ -40,3 +40,27 @@ export const halfCourtRight = new Vector3(
   0,
   0,
 );
+
+export const laneFrontLeftCorner = new Vector3(
+  -6,
+  0,
+  courtLength / 2,
+);
+
+export const laneFrontRightCorner = new Vector3(
+  6,
+  0,
+  courtLength / 2,
+);
+
+export const laneBackLeftCorner = new Vector3(
+  -6,
+  0,
+  courtLength / 2 - 19,
+);
+
+export const laneBackRightCorner = new Vector3(
+  6,
+  0,
+  courtLength / 2 - 19,
+);

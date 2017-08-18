@@ -11,6 +11,10 @@ import {
   backLeftCorner,
   halfCourtLeft,
   halfCourtRight,
+  laneFrontRightCorner,
+  laneFrontLeftCorner,
+  laneBackRightCorner,
+  laneBackLeftCorner,
   lineWidth,
 } from './courtDimensions';
 
@@ -109,6 +113,52 @@ function createCenterCircle() {
   disc.rotation.x = Math.PI/2;
 }
 
+function createLane() {
+  const outerEdge = [
+    laneFrontLeftCorner,
+    laneBackLeftCorner,
+    laneBackRightCorner,
+    laneFrontRightCorner,
+  ];
+
+  const innerEdge = [
+    new Vector3(
+      laneFrontLeftCorner.x + lineWidth,
+      laneFrontLeftCorner.y,
+      laneFrontLeftCorner.z,
+    ),
+    new Vector3(
+      laneBackLeftCorner.x + lineWidth,
+      laneBackLeftCorner.y,
+      laneBackLeftCorner.z + lineWidth,
+    ),
+    new Vector3(
+      laneBackRightCorner.x - lineWidth,
+      laneBackRightCorner.y,
+      laneBackRightCorner.z + lineWidth,
+    ),
+    new Vector3(
+      laneFrontRightCorner.x - lineWidth,
+      laneFrontRightCorner.y,
+      laneFrontRightCorner.z,
+    )
+  ];
+
+  Mesh.CreateRibbon(
+    'lane',
+    [
+      outerEdge,
+      innerEdge,
+    ],
+    true,
+    false,
+    0,
+    scene,
+    false,
+  );
+}
+
 createOutOfBoundsLine();
 createHalfCourtLine();
 createCenterCircle();
+createLane();
