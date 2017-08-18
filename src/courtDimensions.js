@@ -64,3 +64,9 @@ export const laneBackRightCorner = new Vector3(
   0,
   courtLength / 2 - 19,
 );
+
+export const freeThrowLineCenter = new Vector3(
+  0,
+  0,
+  courtLength / 2 - 19,
+);

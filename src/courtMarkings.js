@@ -17,6 +17,7 @@ import {
   laneFrontLeftCorner,
   laneBackRightCorner,
   laneBackLeftCorner,
+  freeThrowLineCenter,
   lineWidth,
 } from './courtDimensions';
 
@@ -146,7 +147,7 @@ function createLane() {
     )
   ];
 
-  const lane = Mesh.CreateRibbon(
+  Mesh.CreateRibbon(
     'lane',
     [
       outerEdge,
@@ -159,8 +160,48 @@ function createLane() {
     false,
   );
 }
+/* this function is terrible. lets fix it */
+function createKey() {
+  function calculateCircleCoord(r, x) {
+    const h = freeThrowLineCenter.x;
+    const k = freeThrowLineCenter.z;
+    return freeThrowLineCenter.z - Math.sqrt(Math.pow(r, 2) - Math.pow(x - h, 2));
+  }
+
+  const innerEdge = [];
+  const outerEdge = [];
+
+  outerEdge.push(new Vector3(laneBackRightCorner.x, 0, laneBackRightCorner.z));
+  innerEdge.push(new Vector3(laneBackRightCorner.x - lineWidth, 0, laneBackRightCorner.z));
+
+  for (let x = laneBackRightCorner.x - lineWidth; x >= laneBackLeftCorner.x + lineWidth; x -= 0.1) {
+    let zOuter = calculateCircleCoord(6, x);
+    let zInner = calculateCircleCoord(6 - lineWidth, x);
+    outerEdge.push(new Vector3(x, 0, zOuter));
+    innerEdge.push(new Vector3(x, 0, zInner));
+  }
+
+  outerEdge.push(new Vector3(laneBackLeftCorner.x, 0, laneBackLeftCorner.z));
+  innerEdge.push(new Vector3(laneBackLeftCorner.x + lineWidth, 0, laneBackLeftCorner.z));
+
+  console.log(outerEdge, innerEdge)
+
+  Mesh.CreateRibbon(
+    'key',
+    [
+      outerEdge,
+      innerEdge,
+    ],
+    false,
+    false,
+    0,
+    scene,
+    false,
+  );
+}
 
 createOutOfBoundsLine();
 createHalfCourtLine();
 createCenterCircle();
 createLane();
+createKey();
