@@ -1,6 +1,8 @@
 import {
+  Color3,
   Mesh,
   Vector3,
+  StandardMaterial,
 } from 'babylonjs';
 
 import scene from './scene';
@@ -115,17 +117,17 @@ function createCenterCircle() {
 
 function createLane() {
   const outerEdge = [
-    laneFrontLeftCorner,
-    laneBackLeftCorner,
     laneBackRightCorner,
+    laneBackLeftCorner,
+    laneFrontLeftCorner,
     laneFrontRightCorner,
   ];
 
   const innerEdge = [
     new Vector3(
-      laneFrontLeftCorner.x + lineWidth,
-      laneFrontLeftCorner.y,
-      laneFrontLeftCorner.z,
+      laneBackRightCorner.x - lineWidth,
+      laneBackRightCorner.y,
+      laneBackRightCorner.z + lineWidth,
     ),
     new Vector3(
       laneBackLeftCorner.x + lineWidth,
@@ -133,9 +135,9 @@ function createLane() {
       laneBackLeftCorner.z + lineWidth,
     ),
     new Vector3(
-      laneBackRightCorner.x - lineWidth,
-      laneBackRightCorner.y,
-      laneBackRightCorner.z + lineWidth,
+      laneFrontLeftCorner.x + lineWidth,
+      laneFrontLeftCorner.y,
+      laneFrontLeftCorner.z,
     ),
     new Vector3(
       laneFrontRightCorner.x - lineWidth,
@@ -144,14 +146,14 @@ function createLane() {
     )
   ];
 
-  Mesh.CreateRibbon(
+  const lane = Mesh.CreateRibbon(
     'lane',
     [
       outerEdge,
       innerEdge,
     ],
-    true,
     false,
+    true,
     0,
     scene,
     false,
