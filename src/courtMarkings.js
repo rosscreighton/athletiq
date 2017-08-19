@@ -160,7 +160,7 @@ function createLane() {
     false,
   );
 }
-/* this function is terrible. lets fix it */
+
 function createKey() {
   function calculateCircleCoord(r, x) {
     const h = freeThrowLineCenter.x;
@@ -170,21 +170,22 @@ function createKey() {
 
   const innerEdge = [];
   const outerEdge = [];
+  const outerIncrement = 0.1;
+  const keyDiameter = laneBackRightCorner.x - laneBackLeftCorner.x;
+  const numberOfPoints = keyDiameter / outerIncrement;
+  const innerIncrement = (keyDiameter - lineWidth * 2) / numberOfPoints;
 
-  outerEdge.push(new Vector3(laneBackRightCorner.x, 0, laneBackRightCorner.z));
-  innerEdge.push(new Vector3(laneBackRightCorner.x - lineWidth, 0, laneBackRightCorner.z));
-
-  for (let x = laneBackRightCorner.x - lineWidth; x >= laneBackLeftCorner.x + lineWidth; x -= 0.1) {
+  /* calculate outer edge of key circle */
+  for (let x = laneBackRightCorner.x; x >= laneBackLeftCorner.x; x -= outerIncrement) {
     let zOuter = calculateCircleCoord(6, x);
-    let zInner = calculateCircleCoord(6 - lineWidth, x);
     outerEdge.push(new Vector3(x, 0, zOuter));
-    innerEdge.push(new Vector3(x, 0, zInner));
   }
 
-  outerEdge.push(new Vector3(laneBackLeftCorner.x, 0, laneBackLeftCorner.z));
-  innerEdge.push(new Vector3(laneBackLeftCorner.x + lineWidth, 0, laneBackLeftCorner.z));
-
-  console.log(outerEdge, innerEdge)
+  /* calculate inner edge of key circle */
+  for (let x = laneBackRightCorner.x - lineWidth; x >= laneBackLeftCorner.x + lineWidth; x -= innerIncrement) {
+    let zInner = calculateCircleCoord(6 - lineWidth, x);
+    innerEdge.push(new Vector3(x, 0, zInner));
+  }
 
   Mesh.CreateRibbon(
     'key',
