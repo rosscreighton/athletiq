@@ -7,6 +7,7 @@ import {
 
 import scene from './scene';
 import {
+  courtLength,
   frontRightCorner,
   frontLeftCorner,
   backRightCorner,
@@ -18,6 +19,10 @@ import {
   laneBackRightCorner,
   laneBackLeftCorner,
   freeThrowLineCenter,
+  threePointLineRadius,
+  threePointLineRadiusAtBaseline,
+  threePointLineOffsetFromBaseline,
+  centerOfHoopProjectedToFloor,
   lineWidth,
 } from './courtDimensions';
 import { calcCircleZ } from './utils';
@@ -172,13 +177,13 @@ function createKey() {
 
   /* calculate outer edge of key circle */
   for (let x = laneBackRightCorner.x; x >= laneBackLeftCorner.x; x -= outerIncrement) {
-    let zOuter = freeThrowLineCenter.z - calcCircleZ(0, 0, 6, x);
+    let zOuter = freeThrowLineCenter.z - calcCircleZ(0, 0, keyDiameter / 2, x);
     outerEdge.push(new Vector3(x, 0, zOuter));
   }
 
   /* calculate inner edge of key circle */
   for (let x = laneBackRightCorner.x - lineWidth; x >= laneBackLeftCorner.x + lineWidth; x -= innerIncrement) {
-    let zInner = freeThrowLineCenter.z - calcCircleZ(0, 0, 6 - lineWidth, x);
+    let zInner = freeThrowLineCenter.z - calcCircleZ(0, 0, (keyDiameter / 2) - lineWidth, x);
     innerEdge.push(new Vector3(x, 0, zInner));
   }
 
@@ -196,8 +201,59 @@ function createKey() {
   );
 }
 
+function createThreePointLine() {
+  const outerEdge = [];
+  const innerEdge = [];
+  const outerIncrement = 0.1;
+  const numberOfPoints = (threePointLineRadius * 2) / outerIncrement;
+  const innerIncrement = (threePointLineRadius * 2 - lineWidth * 2) / numberOfPoints;
+  const startDrawingThreePointArc = courtLength / 2 - threePointLineOffsetFromBaseline;
+
+  outerEdge.push(new Vector3(threePointLineRadiusAtBaseline, 0, courtLength / 2));
+  innerEdge.push(new Vector3(threePointLineRadiusAtBaseline - lineWidth, 0, courtLength / 2));
+
+  /* calculate outer edge of three point line */
+  for (let x = threePointLineRadius; x >= -1 * threePointLineRadius; x -= outerIncrement) {
+    let zOuter = centerOfHoopProjectedToFloor.z - calcCircleZ(0, 0, threePointLineRadius, x);
+    if (zOuter <= startDrawingThreePointArc) {
+      if (x < threePointLineRadiusAtBaseline || x > -1 * threePointLineRadiusAtBaseline) {
+        outerEdge.push(new Vector3(x, 0, zOuter));
+      }
+    }
+  }
+
+  /* calculate inner edge of three point line */
+  for (let x = threePointLineRadius - lineWidth; x >= (-1 * threePointLineRadius) + lineWidth; x -= innerIncrement) {
+    let zInner = centerOfHoopProjectedToFloor.z - calcCircleZ(0, 0, threePointLineRadius - lineWidth, x);
+    if (zInner <= startDrawingThreePointArc) {
+      if (x < threePointLineRadiusAtBaseline || x > -1 * threePointLineRadiusAtBaseline) {
+        innerEdge.push(new Vector3(x, 0, zInner));
+      }
+    }
+  }
+
+  outerEdge.push(new Vector3(-1 * threePointLineRadiusAtBaseline, 0, courtLength / 2));
+  innerEdge.push(new Vector3(-1 * threePointLineRadiusAtBaseline + lineWidth, 0, courtLength / 2));
+
+  console.log(outerEdge, innerEdge);
+
+  Mesh.CreateRibbon(
+    'threePointLine',
+    [
+      outerEdge,
+      innerEdge,
+    ],
+    false,
+    false,
+    0,
+    scene,
+    false,
+  );
+}
+
 createOutOfBoundsLine();
 createHalfCourtLine();
 createCenterCircle();
 createLane();
 createKey();
+createThreePointLine();
