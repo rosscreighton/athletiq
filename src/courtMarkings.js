@@ -199,6 +199,36 @@ function createKey() {
     scene,
     false,
   );
+
+  const outerEdge2 = outerEdge.map(vector => {
+    return new Vector3(
+      vector.x,
+      vector.y,
+      vector.z * -1,
+    )
+  })
+
+  const innerEdge2 = innerEdge.map(vector => {
+    return new Vector3(
+      vector.x,
+      vector.y,
+      vector.z * -1,
+    )
+  })
+
+  Mesh.CreateRibbon(
+    'key',
+    [
+      outerEdge2,
+      innerEdge2,
+    ],
+    false,
+    false,
+    0,
+    scene,
+    false,
+    Mesh.BACKSIDE,
+  );
 }
 
 function createThreePointLine() {
