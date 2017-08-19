@@ -20,6 +20,7 @@ import {
   freeThrowLineCenter,
   lineWidth,
 } from './courtDimensions';
+import { calcCircleZ } from './utils';
 
 function createOutOfBoundsLine() {
   const outerEdge = [
@@ -162,12 +163,6 @@ function createLane() {
 }
 
 function createKey() {
-  function calculateCircleCoord(r, x) {
-    const h = freeThrowLineCenter.x;
-    const k = freeThrowLineCenter.z;
-    return freeThrowLineCenter.z - Math.sqrt(Math.pow(r, 2) - Math.pow(x - h, 2));
-  }
-
   const innerEdge = [];
   const outerEdge = [];
   const outerIncrement = 0.1;
@@ -177,13 +172,13 @@ function createKey() {
 
   /* calculate outer edge of key circle */
   for (let x = laneBackRightCorner.x; x >= laneBackLeftCorner.x; x -= outerIncrement) {
-    let zOuter = calculateCircleCoord(6, x);
+    let zOuter = freeThrowLineCenter.z - calcCircleZ(0, 0, 6, x);
     outerEdge.push(new Vector3(x, 0, zOuter));
   }
 
   /* calculate inner edge of key circle */
   for (let x = laneBackRightCorner.x - lineWidth; x >= laneBackLeftCorner.x + lineWidth; x -= innerIncrement) {
-    let zInner = calculateCircleCoord(6 - lineWidth, x);
+    let zInner = freeThrowLineCenter.z - calcCircleZ(0, 0, 6 - lineWidth, x);
     innerEdge.push(new Vector3(x, 0, zInner));
   }
 
