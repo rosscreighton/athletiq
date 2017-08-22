@@ -27,22 +27,23 @@ import {
 } from './courtDimensions';
 import { calcCircleZ } from './utils';
 
-function createMarking(path, axisOfSymmetryX, axisOfSymmetryZ, name, reflectAcrossDivisionLine) {
+function createMarking(path, name, opts={}) {
+  const { symmetryX=0, symmetryZ=0, reflect=true } = opts;
   const offsetPath = [];
   const reflectedPath = [];
   const reflectedOffsetPath = [];
 
-  path.forEach(({ x, y, z }) => {
+  path.forEach(({ x, y, z }, idx) => {
     let offsetX;
     let offsetZ;
 
-    if (x >= axisOfSymmetryX) {
+    if (x >= symmetryX) {
       offsetX = x - lineWidth;
     } else {
       offsetX = x + lineWidth;
     }
 
-    if (z >= axisOfSymmetryZ) {
+    if (z >= symmetryZ) {
       offsetZ = z - lineWidth;
     } else {
       offsetZ = z + lineWidth;
@@ -56,7 +57,7 @@ function createMarking(path, axisOfSymmetryX, axisOfSymmetryZ, name, reflectAcro
 
     offsetPath.push(offsetVector);
 
-    if (reflectAcrossDivisionLine) {
+    if (reflect) {
       reflectedPath.push(new Vector3(x, y, z * -1))
       reflectedOffsetPath.push(new Vector3(offsetX, y, offsetZ * -1))
     }
@@ -75,9 +76,9 @@ function createMarking(path, axisOfSymmetryX, axisOfSymmetryZ, name, reflectAcro
     false,
   );
 
-  if (reflectAcrossDivisionLine) {
+  if (reflect) {
     Mesh.CreateRibbon(
-      name + 'reflected',
+      name + 'Reflected',
       [
         reflectedOffsetPath,
         reflectedPath,
@@ -91,19 +92,18 @@ function createMarking(path, axisOfSymmetryX, axisOfSymmetryZ, name, reflectAcro
   }
 }
 
-function createOutOfBoundsLine() {
+function createBoundaryLine() {
   const path = [
-    backRightCorner,
-    backLeftCorner,
+    halfCourtLeft,
     frontLeftCorner,
     frontRightCorner,
-    backRightCorner,
+    halfCourtRight,
   ];
 
-  createMarking(path, 0, 0, 'boundaryLine');
+  createMarking(path, 'boundaryLine');
 }
 
-function createHalfCourtLine() {
+function createDivisionLine() {
   const path = [
     new Vector3(
       halfCourtLeft.x,
@@ -117,7 +117,7 @@ function createHalfCourtLine() {
     )
   ];
 
-  createMarking(path, 0, 0, 'divisionLine');
+  createMarking(path, 'divisionLine', { reflect: false });
 }
 
 function createCenterCircle() {
@@ -279,8 +279,8 @@ function createThreePointLine() {
   );
 }
 
-createOutOfBoundsLine();
-createHalfCourtLine();
+createBoundaryLine();
+createDivisionLine();
 createCenterCircle();
 createLane();
 createKey();
