@@ -28,25 +28,50 @@ import {
 import { calcCircleZ } from './utils';
 
 function createMarking(path, name, opts={}) {
-  const { symmetryX=0, symmetryZ=0, reflect=true } = opts;
+  const {
+    symmetryX=0,
+    symmetryZ=0,
+    offsetFirstX=true,
+    offsetFirstZ=true,
+    offsetLastX=true,
+    offsetLastZ=true,
+    reflect=true
+  } = opts;
   const offsetPath = [];
   const reflectedPath = [];
   const reflectedOffsetPath = [];
 
   path.forEach(({ x, y, z }, idx) => {
-    let offsetX;
-    let offsetZ;
+    let shouldOffsetX = true;
+    let shouldOffsetZ = true;
 
-    if (x >= symmetryX) {
-      offsetX = x - lineWidth;
-    } else {
-      offsetX = x + lineWidth;
+    if (idx === 0) {
+      shouldOffsetX = offsetFirstX;
+      shouldOffsetZ = offsetFirstZ;
     }
 
-    if (z >= symmetryZ) {
-      offsetZ = z - lineWidth;
-    } else {
-      offsetZ = z + lineWidth;
+    if (idx === path.length - 1) {
+      shouldOffsetX = offsetLastX;
+      shouldOffsetZ = offsetLastZ;
+    }
+
+    let offsetX = x;
+    let offsetZ = z;
+
+    if (shouldOffsetX) {
+      if (x >= symmetryX) {
+        offsetX = x - lineWidth;
+      } else {
+        offsetX = x + lineWidth;
+      }
+    }
+
+    if (shouldOffsetZ) {
+      if (z >= symmetryZ) {
+        offsetZ = z - lineWidth;
+      } else {
+        offsetZ = z + lineWidth;
+      }
     }
 
     const offsetVector = new Vector3(
