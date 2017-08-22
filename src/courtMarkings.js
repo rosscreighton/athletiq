@@ -159,12 +159,14 @@ function createLane() {
     laneBackRightCorner,
   ];
 
-  createMarking(path, 0, courtLength / 2, 'lane', true);
+  createMarking(path, 'lane', {
+    symmetryZ: courtLength / 2,
+    reflect: true,
+  });
 }
 
 function createKey() {
-  const innerEdge = [];
-  const outerEdge = [];
+  const path = [];
   const outerIncrement = 0.1;
   const keyDiameter = laneBackRightCorner.x - laneBackLeftCorner.x;
   const numberOfPoints = keyDiameter / outerIncrement;
@@ -172,58 +174,16 @@ function createKey() {
 
   /* calculate outer edge of key circle */
   for (let x = laneBackRightCorner.x; x >= laneBackLeftCorner.x; x -= outerIncrement) {
-    let zOuter = freeThrowLineCenter.z - calcCircleZ(0, 0, keyDiameter / 2, x);
-    outerEdge.push(new Vector3(x, 0, zOuter));
+    let z = freeThrowLineCenter.z - calcCircleZ(0, 0, keyDiameter / 2, x);
+    path.push(new Vector3(x, 0, z));
   }
 
-  /* calculate inner edge of key circle */
-  for (let x = laneBackRightCorner.x - lineWidth; x >= laneBackLeftCorner.x + lineWidth; x -= innerIncrement) {
-    let zInner = freeThrowLineCenter.z - calcCircleZ(0, 0, (keyDiameter / 2) - lineWidth, x);
-    innerEdge.push(new Vector3(x, 0, zInner));
-  }
-
-  Mesh.CreateRibbon(
-    'key',
-    [
-      outerEdge,
-      innerEdge,
-    ],
-    false,
-    false,
-    0,
-    scene,
-    false,
-  );
-
-  const outerEdge2 = outerEdge.map(vector => {
-    return new Vector3(
-      vector.x,
-      vector.y,
-      vector.z * -1,
-    )
-  })
-
-  const innerEdge2 = innerEdge.map(vector => {
-    return new Vector3(
-      vector.x,
-      vector.y,
-      vector.z * -1,
-    )
-  })
-
-  Mesh.CreateRibbon(
-    'key2',
-    [
-      outerEdge2,
-      innerEdge2,
-    ],
-    false,
-    false,
-    0,
-    scene,
-    false,
-    Mesh.BACKSIDE,
-  );
+  createMarking(path, 'key', {
+    symmetryZ: freeThrowLineCenter.z,
+    offsetFirstZ: false,
+    offsetLastZ: false,
+    reflect: true,
+  });
 }
 
 function createThreePointLine() {
