@@ -27,57 +27,84 @@ import {
 } from './courtDimensions';
 import { calcCircleZ } from './utils';
 
-function createOutOfBoundsLine() {
-  const outerEdge = [
-    backRightCorner,
-    backLeftCorner,
-    frontLeftCorner,
-    frontRightCorner,
-  ];
+function createMarking(path, axisOfSymmetryX, axisOfSymmetryZ, name, reflectAcrossDivisionLine) {
+  const offsetPath = [];
+  const reflectedPath = [];
+  const reflectedOffsetPath = [];
 
-  const innerEdge = [];
+  path.forEach(({ x, y, z }) => {
+    let offsetX;
+    let offsetZ;
 
-  outerEdge.forEach(vector => {
-    let innerX;
-    let innerZ;
-
-    if (vector.x >= 0) {
-      innerX = vector.x - lineWidth;
+    if (x >= axisOfSymmetryX) {
+      offsetX = x - lineWidth;
     } else {
-      innerX = vector.x + lineWidth;
+      offsetX = x + lineWidth;
     }
 
-    if (vector.z >= 0) {
-      innerZ = vector.z - lineWidth;
+    if (z >= axisOfSymmetryZ) {
+      offsetZ = z - lineWidth;
     } else {
-      innerZ = vector.z + lineWidth;
+      offsetZ = z + lineWidth;
     }
 
-    innerEdge.push(
-      new Vector3(
-        innerX,
-        vector.y,
-        innerZ,
-      )
+    const offsetVector = new Vector3(
+      offsetX,
+      y,
+      offsetZ,
     );
+
+    offsetPath.push(offsetVector);
+
+    if (reflectAcrossDivisionLine) {
+      reflectedPath.push(new Vector3(x, y, z * -1))
+      reflectedOffsetPath.push(new Vector3(offsetX, y, offsetZ * -1))
+    }
   });
 
   Mesh.CreateRibbon(
-    'outOfBoundsLine',
+    name,
     [
-      outerEdge,
-      innerEdge,
+      path,
+      offsetPath,
     ],
     false,
-    true,
+    false,
     0,
     scene,
     false,
   );
+
+  if (reflectAcrossDivisionLine) {
+    Mesh.CreateRibbon(
+      name + 'reflected',
+      [
+        reflectedOffsetPath,
+        reflectedPath,
+      ],
+      false,
+      false,
+      0,
+      scene,
+      false,
+    );
+  }
+}
+
+function createOutOfBoundsLine() {
+  const path = [
+    backRightCorner,
+    backLeftCorner,
+    frontLeftCorner,
+    frontRightCorner,
+    backRightCorner,
+  ];
+
+  createMarking(path, 0, 0, 'boundaryLine');
 }
 
 function createHalfCourtLine() {
-  const forwardEdge = [
+  const path = [
     new Vector3(
       halfCourtLeft.x,
       halfCourtLeft.y,
@@ -90,81 +117,24 @@ function createHalfCourtLine() {
     )
   ];
 
-  const backwardEdge = [
-    new Vector3(
-      halfCourtLeft.x,
-      halfCourtLeft.y,
-      halfCourtLeft.z - lineWidth / 2,
-    ),
-    new Vector3(
-      halfCourtRight.x,
-      halfCourtRight.y,
-      halfCourtRight.z - lineWidth / 2,
-    )
-  ];
-
-  Mesh.CreateRibbon(
-    'halfCourtLine',
-    [
-      forwardEdge,
-      backwardEdge,
-    ],
-    false,
-    false,
-    0,
-    scene,
-    false,
-  );
+  createMarking(path, 0, 0, 'divisionLine');
 }
 
 function createCenterCircle() {
   const disc = Mesh.CreateDisc('centerCircle', 6, 64, scene);
-  disc.rotation.x = Math.PI/2;
+  disc.rotation.x = Math.PI / 2;
 }
 
 function createLane() {
-  const outerEdge = [
+  const path = [
     laneBackRightCorner,
     laneBackLeftCorner,
     laneFrontLeftCorner,
     laneFrontRightCorner,
+    laneBackRightCorner,
   ];
 
-  const innerEdge = [
-    new Vector3(
-      laneBackRightCorner.x - lineWidth,
-      laneBackRightCorner.y,
-      laneBackRightCorner.z + lineWidth,
-    ),
-    new Vector3(
-      laneBackLeftCorner.x + lineWidth,
-      laneBackLeftCorner.y,
-      laneBackLeftCorner.z + lineWidth,
-    ),
-    new Vector3(
-      laneFrontLeftCorner.x + lineWidth,
-      laneFrontLeftCorner.y,
-      laneFrontLeftCorner.z,
-    ),
-    new Vector3(
-      laneFrontRightCorner.x - lineWidth,
-      laneFrontRightCorner.y,
-      laneFrontRightCorner.z,
-    )
-  ];
-
-  Mesh.CreateRibbon(
-    'lane',
-    [
-      outerEdge,
-      innerEdge,
-    ],
-    false,
-    true,
-    0,
-    scene,
-    false,
-  );
+  createMarking(path, 0, courtLength / 2, 'lane', true);
 }
 
 function createKey() {
@@ -217,7 +187,7 @@ function createKey() {
   })
 
   Mesh.CreateRibbon(
-    'key',
+    'key2',
     [
       outerEdge2,
       innerEdge2,
@@ -265,8 +235,6 @@ function createThreePointLine() {
   outerEdge.push(new Vector3(-1 * threePointLineRadiusAtBaseline, 0, courtLength / 2));
   innerEdge.push(new Vector3(-1 * threePointLineRadiusAtBaseline + lineWidth, 0, courtLength / 2));
 
-  console.log(outerEdge, innerEdge);
-
   Mesh.CreateRibbon(
     'threePointLine',
     [
@@ -278,6 +246,36 @@ function createThreePointLine() {
     0,
     scene,
     false,
+  );
+
+  const outerEdge2 = outerEdge.map(vector => {
+    return new Vector3(
+      vector.x,
+      vector.y,
+      vector.z * -1,
+    )
+  })
+
+  const innerEdge2 = innerEdge.map(vector => {
+    return new Vector3(
+      vector.x,
+      vector.y,
+      vector.z * -1,
+    )
+  })
+
+  Mesh.CreateRibbon(
+    'threePointLine2',
+    [
+      outerEdge2,
+      innerEdge2,
+    ],
+    false,
+    false,
+    0,
+    scene,
+    false,
+    Mesh.BACKSIDE,
   );
 }
 
