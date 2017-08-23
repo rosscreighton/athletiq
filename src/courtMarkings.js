@@ -31,7 +31,7 @@ import {
 } from './courtDimensions';
 import { calcCircleZ } from './utils';
 
-function createMarking(path, name, opts={}) {
+function createRibbon(path, name, opts={}) {
   const {
     symmetryX=0,
     symmetryZ=0,
@@ -174,7 +174,7 @@ function createBoundaryLine() {
     halfCourtRight,
   ];
 
-  createMarking(path, 'boundaryLine');
+  createRibbon(path, 'boundaryLine');
 }
 
 function createDivisionLine() {
@@ -191,7 +191,7 @@ function createDivisionLine() {
     )
   ];
 
-  createMarking(path, 'divisionLine', { reflectZ: false });
+  createRibbon(path, 'divisionLine', { reflectZ: false });
 }
 
 function createCenterCircle() {
@@ -208,7 +208,7 @@ function createLane() {
     laneBackRightCorner,
   ];
 
-  createMarking(path, 'lane', {
+  createRibbon(path, 'lane', {
     symmetryZ: courtLength / 2,
   });
 }
@@ -226,7 +226,7 @@ function createRestrictedArea() {
   that messes up the iterator above */
   path.push(new Vector3(-1 * restrictedAreaRadius, 0, circleCenterZ));
 
-  createMarking(path, 'restrictedArea', {
+  createRibbon(path, 'restrictedArea', {
     symmetryZ: circleCenterZ,
     offsetFirstZ: false,
     offsetLastZ: false,
@@ -243,7 +243,7 @@ function createNBALane() {
     laneBackRightCornerNBA,
   ];
 
-  createMarking(path, 'nbaLane', {
+  createRibbon(path, 'nbaLane', {
     symmetryZ: courtLength / 2,
   });
 }
@@ -303,7 +303,7 @@ function createBlocks() {
 
 
   [block1, block2, block3, block4].forEach(path => {
-    createMarking(path, 'blocks', {
+    createRibbon(path, 'blocks', {
       offsetLastX: false,
       reflectX: true,
     });
@@ -320,7 +320,7 @@ function createKey() {
     path.push(new Vector3(x, 0, z));
   }
 
-  createMarking(path, 'key', {
+  createRibbon(path, 'key', {
     symmetryZ: freeThrowLineCenter.z,
     offsetFirstZ: false,
     offsetLastZ: false,
@@ -344,7 +344,7 @@ function createThreePointLine() {
 
   path.push(new Vector3(-1 * threePointLineRadiusAtBaseline, 0, courtLength / 2));
 
-  createMarking(path, 'threePointLine', {
+  createRibbon(path, 'threePointLine', {
     symmetryZ: courtLength / 2,
     offsetFirstZ: false,
     offsetLastZ: false,
@@ -357,7 +357,7 @@ function createHashMarks() {
     new Vector3(courtWidth / 2, 0, hashMarkZ),
   ]
 
-  createMarking(path, 'threePointLine', {
+  createRibbon(path, 'threePointLine', {
     offsetFirstX: false,
     offsetLastX: false,
     reflectX: true,
