@@ -35,11 +35,16 @@ function createMarking(path, name, opts={}) {
     offsetFirstZ=true,
     offsetLastX=true,
     offsetLastZ=true,
-    reflect=true
+    reflectZ=true,
+    reflectX=false,
   } = opts;
   const offsetPath = [];
-  const reflectedPath = [];
-  const reflectedOffsetPath = [];
+  const reflectedPathZ = [];
+  const reflectedOffsetPathZ = [];
+  const reflectedPathX = [];
+  const reflectedOffsetPathX = [];
+  const reflectedPathXZ = [];
+  const reflectedOffsetPathXZ = [];
 
   path.forEach(({ x, y, z }, idx) => {
     let shouldOffsetX = true;
@@ -82,9 +87,19 @@ function createMarking(path, name, opts={}) {
 
     offsetPath.push(offsetVector);
 
-    if (reflect) {
-      reflectedPath.push(new Vector3(x, y, z * -1))
-      reflectedOffsetPath.push(new Vector3(offsetX, y, offsetZ * -1))
+    if (reflectZ) {
+      reflectedPathZ.push(new Vector3(x, y, z * -1))
+      reflectedOffsetPathZ.push(new Vector3(offsetX, y, offsetZ * -1))
+    }
+
+    if (reflectX) {
+      reflectedPathX.push(new Vector3(x * -1 , y, z))
+      reflectedOffsetPathX.push(new Vector3(offsetX * -1, y, offsetZ))
+
+      if (reflectZ) {
+        reflectedPathXZ.push(new Vector3(x * -1 , y, z * -1))
+        reflectedOffsetPathXZ.push(new Vector3(offsetX * -1, y, offsetZ * -1))
+      }
     }
   });
 
@@ -101,12 +116,12 @@ function createMarking(path, name, opts={}) {
     false,
   );
 
-  if (reflect) {
+  if (reflectZ) {
     Mesh.CreateRibbon(
-      name + 'Reflected',
+      name + 'ReflectedZ',
       [
-        reflectedOffsetPath,
-        reflectedPath,
+        reflectedOffsetPathZ,
+        reflectedPathZ,
       ],
       false,
       false,
@@ -114,6 +129,36 @@ function createMarking(path, name, opts={}) {
       scene,
       false,
     );
+  }
+
+  if (reflectX) {
+    Mesh.CreateRibbon(
+      name + 'ReflectedX',
+      [
+        reflectedOffsetPathX,
+        reflectedPathX,
+      ],
+      false,
+      false,
+      0,
+      scene,
+      false,
+    );
+
+    if (reflectZ) {
+      Mesh.CreateRibbon(
+        name + 'ReflectedXZ',
+        [
+          reflectedPathXZ,
+          reflectedOffsetPathXZ,
+        ],
+        false,
+        false,
+        0,
+        scene,
+        false,
+      );
+    }
   }
 }
 
@@ -142,7 +187,7 @@ function createDivisionLine() {
     )
   ];
 
-  createMarking(path, 'divisionLine', { reflect: false });
+  createMarking(path, 'divisionLine', { reflectZ: false });
 }
 
 function createCenterCircle() {
@@ -161,7 +206,7 @@ function createLane() {
 
   createMarking(path, 'lane', {
     symmetryZ: courtLength / 2,
-    reflect: true,
+    reflectZ: true,
   });
 }
 
@@ -237,7 +282,7 @@ function createBlocks() {
   [block1, block2, block3, block4].forEach(path => {
     createMarking(path, 'blocks', {
       offsetLastX: false,
-      reflectZ: true,
+      reflectX: true,
     });
   });
 };
@@ -256,7 +301,7 @@ function createKey() {
     symmetryZ: freeThrowLineCenter.z,
     offsetFirstZ: false,
     offsetLastZ: false,
-    reflect: true,
+    reflectZ: true,
   });
 }
 
