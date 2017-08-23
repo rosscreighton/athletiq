@@ -3,6 +3,7 @@ import { Vector3 } from 'babylonjs';
 const courtWidth = 50;
 export const courtLength = 94;
 const laneWidth = 12;
+const laneWidthNBA = 16;
 const laneLength = 19;
 const rimRadius = 9/12;
 const rimAttachmentLength = 5.9/12;
@@ -69,6 +70,30 @@ export const laneBackLeftCorner = new Vector3(
 
 export const laneBackRightCorner = new Vector3(
   laneWidth / 2,
+  0,
+  courtLength / 2 - laneLength,
+);
+
+export const laneFrontLeftCornerNBA = new Vector3(
+  -1 * (laneWidthNBA / 2),
+  0,
+  courtLength / 2,
+);
+
+export const laneFrontRightCornerNBA = new Vector3(
+  laneWidthNBA / 2,
+  0,
+  courtLength / 2,
+);
+
+export const laneBackLeftCornerNBA = new Vector3(
+  -1 * (laneWidthNBA / 2),
+  0,
+  courtLength / 2 - laneLength,
+);
+
+export const laneBackRightCornerNBA = new Vector3(
+  laneWidthNBA / 2,
   0,
   courtLength / 2 - laneLength,
 );

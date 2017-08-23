@@ -14,6 +14,10 @@ import {
   laneFrontLeftCorner,
   laneBackRightCorner,
   laneBackLeftCorner,
+  laneBackRightCornerNBA,
+  laneBackLeftCornerNBA,
+  laneFrontLeftCornerNBA,
+  laneFrontRightCornerNBA,
   freeThrowLineCenter,
   threePointLineRadius,
   threePointLineRadiusAtBaseline,
@@ -161,6 +165,83 @@ function createLane() {
   });
 }
 
+function createNBALane() {
+  const path = [
+    laneBackRightCornerNBA,
+    laneBackLeftCornerNBA,
+    laneFrontLeftCornerNBA,
+    laneFrontRightCornerNBA,
+    laneBackRightCornerNBA,
+  ];
+
+  createMarking(path, 'nbaLane', {
+    symmetryZ: courtLength / 2,
+    reflectZ: true,
+  });
+};
+
+function createBlocks() {
+  const block1 = [
+    new Vector3(
+      laneFrontRightCornerNBA.x,
+      0,
+      laneFrontRightCornerNBA.z - 7,
+    ),
+    new Vector3(
+      laneFrontRightCornerNBA.x + 1,
+      0,
+      laneFrontRightCornerNBA.z - 7,
+    ),
+  ];
+
+  const block2 = [
+    new Vector3(
+      laneFrontRightCornerNBA.x,
+      0,
+      laneFrontRightCornerNBA.z - 8,
+    ),
+    new Vector3(
+      laneFrontRightCornerNBA.x + 0.75,
+      0,
+      laneFrontRightCornerNBA.z - 8,
+    ),
+  ];
+
+  const block3 = [
+    new Vector3(
+      laneFrontRightCornerNBA.x,
+      0,
+      laneFrontRightCornerNBA.z - 11,
+    ),
+    new Vector3(
+      laneFrontRightCornerNBA.x + 0.5,
+      0,
+      laneFrontRightCornerNBA.z - 11,
+    ),
+  ];
+
+  const block4 = [
+    new Vector3(
+      laneFrontRightCornerNBA.x,
+      0,
+      laneFrontRightCornerNBA.z - 14,
+    ),
+    new Vector3(
+      laneFrontRightCornerNBA.x + 0.4,
+      0,
+      laneFrontRightCornerNBA.z - 14,
+    ),
+  ];
+
+
+  [block1, block2, block3, block4].forEach(path => {
+    createMarking(path, 'blocks', {
+      offsetLastX: false,
+      reflectZ: true,
+    });
+  });
+};
+
 function createKey() {
   const path = [];
   const keyDiameter = laneBackRightCorner.x - laneBackLeftCorner.x;
@@ -207,5 +288,7 @@ createBoundaryLine();
 createDivisionLine();
 createCenterCircle();
 createLane();
+createNBALane();
+createBlocks();
 createKey();
 createThreePointLine();
