@@ -166,7 +166,7 @@ function paintLine(path, name, opts={}) {
   }
 }
 
-function createBoundaryLine() {
+function paintBoundaryLine() {
   const path = [
     halfCourtLeft,
     frontLeftCorner,
@@ -177,7 +177,7 @@ function createBoundaryLine() {
   paintLine(path, 'boundaryLine');
 }
 
-function createDivisionLine() {
+function paintDivisionLine() {
   const path = [
     new Vector3(
       halfCourtLeft.x,
@@ -194,12 +194,12 @@ function createDivisionLine() {
   paintLine(path, 'divisionLine', { reflectZ: false });
 }
 
-function createCenterCircle() {
+function paintCenterCircle() {
   const disc = Mesh.CreateDisc('centerCircle', 6, 64, scene);
   disc.rotation.x = Math.PI / 2;
 }
 
-function createLane() {
+function paintLane() {
   const path = [
     laneBackRightCorner,
     laneBackLeftCorner,
@@ -213,7 +213,7 @@ function createLane() {
   });
 }
 
-function createRestrictedArea() {
+function paintRestrictedArea() {
   const path = [];
   const circleCenterZ = courtLength / 2 - backboardOffsetFromBaseline;
 
@@ -234,7 +234,7 @@ function createRestrictedArea() {
 
 }
 
-function createNBALane() {
+function paintNBALane() {
   const path = [
     laneBackRightCornerNBA,
     laneBackLeftCornerNBA,
@@ -248,7 +248,7 @@ function createNBALane() {
   });
 }
 
-function createBlocks() {
+function paintBlocks() {
   const block1 = [
     new Vector3(
       laneFrontRightCornerNBA.x,
@@ -310,7 +310,7 @@ function createBlocks() {
   });
 }
 
-function createKey() {
+function paintKey() {
   const path = [];
   const keyRadius = (laneBackRightCorner.x - laneBackLeftCorner.x) / 2;
 
@@ -327,7 +327,7 @@ function createKey() {
   });
 }
 
-function createThreePointLine() {
+function paintThreePointLine() {
   const path = [];
   const startDrawingThreePointArc = courtLength / 2 - threePointLineOffsetFromBaseline;
 
@@ -351,7 +351,7 @@ function createThreePointLine() {
   });
 }
 
-function createHashMarks() {
+function paintHashMarks() {
   const path = [
     new Vector3(courtWidth / 2 - 2, 0, hashMarkZ),
     new Vector3(courtWidth / 2, 0, hashMarkZ),
@@ -364,13 +364,13 @@ function createHashMarks() {
   });
 }
 
-createBoundaryLine();
-createDivisionLine();
-createCenterCircle();
-createLane();
-createNBALane();
-createRestrictedArea();
-createBlocks();
-createKey();
-createThreePointLine();
-createHashMarks();
+paintBoundaryLine();
+paintDivisionLine();
+paintCenterCircle();
+paintLane();
+paintNBALane();
+paintRestrictedArea();
+paintBlocks();
+paintKey();
+paintThreePointLine();
+paintHashMarks();
