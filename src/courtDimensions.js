@@ -14,7 +14,7 @@ export const threePointLineRadiusAtBaseline = 22;
 export const threePointLineOffsetFromBaseline = 14;
 export const hashMarkZ = courtLength / 2 - 28;
 const oneInch = 1/12;
-export const lineWidth = oneInch * 3;
+export const lineWidth = oneInch * 2;
 
 export const backRightCorner = new Vector3(
   courtWidth / 2,
