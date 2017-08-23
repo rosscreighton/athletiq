@@ -31,7 +31,7 @@ import {
 } from './courtDimensions';
 import { calcCircleZ } from './utils';
 
-function createRibbon(path, name, opts={}) {
+function paintLine(path, name, opts={}) {
   const {
     symmetryX=0,
     symmetryZ=0,
@@ -174,7 +174,7 @@ function createBoundaryLine() {
     halfCourtRight,
   ];
 
-  createRibbon(path, 'boundaryLine');
+  paintLine(path, 'boundaryLine');
 }
 
 function createDivisionLine() {
@@ -191,7 +191,7 @@ function createDivisionLine() {
     )
   ];
 
-  createRibbon(path, 'divisionLine', { reflectZ: false });
+  paintLine(path, 'divisionLine', { reflectZ: false });
 }
 
 function createCenterCircle() {
@@ -208,7 +208,7 @@ function createLane() {
     laneBackRightCorner,
   ];
 
-  createRibbon(path, 'lane', {
+  paintLine(path, 'lane', {
     symmetryZ: courtLength / 2,
   });
 }
@@ -226,7 +226,7 @@ function createRestrictedArea() {
   that messes up the iterator above */
   path.push(new Vector3(-1 * restrictedAreaRadius, 0, circleCenterZ));
 
-  createRibbon(path, 'restrictedArea', {
+  paintLine(path, 'restrictedArea', {
     symmetryZ: circleCenterZ,
     offsetFirstZ: false,
     offsetLastZ: false,
@@ -243,7 +243,7 @@ function createNBALane() {
     laneBackRightCornerNBA,
   ];
 
-  createRibbon(path, 'nbaLane', {
+  paintLine(path, 'nbaLane', {
     symmetryZ: courtLength / 2,
   });
 }
@@ -303,7 +303,7 @@ function createBlocks() {
 
 
   [block1, block2, block3, block4].forEach(path => {
-    createRibbon(path, 'blocks', {
+    paintLine(path, 'blocks', {
       offsetLastX: false,
       reflectX: true,
     });
@@ -320,7 +320,7 @@ function createKey() {
     path.push(new Vector3(x, 0, z));
   }
 
-  createRibbon(path, 'key', {
+  paintLine(path, 'key', {
     symmetryZ: freeThrowLineCenter.z,
     offsetFirstZ: false,
     offsetLastZ: false,
@@ -344,7 +344,7 @@ function createThreePointLine() {
 
   path.push(new Vector3(-1 * threePointLineRadiusAtBaseline, 0, courtLength / 2));
 
-  createRibbon(path, 'threePointLine', {
+  paintLine(path, 'threePointLine', {
     symmetryZ: courtLength / 2,
     offsetFirstZ: false,
     offsetLastZ: false,
@@ -357,7 +357,7 @@ function createHashMarks() {
     new Vector3(courtWidth / 2, 0, hashMarkZ),
   ]
 
-  createRibbon(path, 'threePointLine', {
+  paintLine(path, 'threePointLine', {
     offsetFirstX: false,
     offsetLastX: false,
     reflectX: true,
