@@ -6,6 +6,7 @@ import {
 import scene from './scene';
 import {
   courtLength,
+  courtWidth,
   frontRightCorner,
   frontLeftCorner,
   halfCourtLeft,
@@ -18,11 +19,14 @@ import {
   laneBackLeftCornerNBA,
   laneFrontLeftCornerNBA,
   laneFrontRightCornerNBA,
+  restrictedAreaRadius,
+  backboardOffsetFromBaseline,
   freeThrowLineCenter,
   threePointLineRadius,
   threePointLineRadiusAtBaseline,
   threePointLineOffsetFromBaseline,
   centerOfHoopProjectedToFloor,
+  hashMarkZ,
   lineWidth,
 } from './courtDimensions';
 import { calcCircleZ } from './utils';
@@ -206,8 +210,28 @@ function createLane() {
 
   createMarking(path, 'lane', {
     symmetryZ: courtLength / 2,
-    reflectZ: true,
   });
+}
+
+function createRestrictedArea() {
+  const path = [];
+  const circleCenterZ = courtLength / 2 - backboardOffsetFromBaseline;
+
+  for (let x = restrictedAreaRadius; x >= -1 * restrictedAreaRadius; x -= 0.1) {
+    let z = circleCenterZ - calcCircleZ(0, 0, restrictedAreaRadius, x);
+    path.push(new Vector3(x, 0, z));
+  }
+
+  /* this easier than dealing with the floating point bs
+  that messes up the iterator above */
+  path.push(new Vector3(-1 * restrictedAreaRadius, 0, circleCenterZ));
+
+  createMarking(path, 'restrictedArea', {
+    symmetryZ: circleCenterZ,
+    offsetFirstZ: false,
+    offsetLastZ: false,
+  });
+
 }
 
 function createNBALane() {
@@ -221,9 +245,8 @@ function createNBALane() {
 
   createMarking(path, 'nbaLane', {
     symmetryZ: courtLength / 2,
-    reflectZ: true,
   });
-};
+}
 
 function createBlocks() {
   const block1 = [
@@ -285,15 +308,15 @@ function createBlocks() {
       reflectX: true,
     });
   });
-};
+}
 
 function createKey() {
   const path = [];
-  const keyDiameter = laneBackRightCorner.x - laneBackLeftCorner.x;
+  const keyRadius = (laneBackRightCorner.x - laneBackLeftCorner.x) / 2;
 
   /* calculate outer edge of key circle */
   for (let x = laneBackRightCorner.x; x >= laneBackLeftCorner.x; x -= 0.1) {
-    let z = freeThrowLineCenter.z - calcCircleZ(0, 0, keyDiameter / 2, x);
+    let z = freeThrowLineCenter.z - calcCircleZ(0, 0, keyRadius, x);
     path.push(new Vector3(x, 0, z));
   }
 
@@ -301,7 +324,6 @@ function createKey() {
     symmetryZ: freeThrowLineCenter.z,
     offsetFirstZ: false,
     offsetLastZ: false,
-    reflectZ: true,
   });
 }
 
@@ -329,11 +351,26 @@ function createThreePointLine() {
   });
 }
 
+function createHashMarks() {
+  const path = [
+    new Vector3(courtWidth / 2 - 2, 0, hashMarkZ),
+    new Vector3(courtWidth / 2, 0, hashMarkZ),
+  ]
+
+  createMarking(path, 'threePointLine', {
+    offsetFirstX: false,
+    offsetLastX: false,
+    reflectX: true,
+  });
+}
+
 createBoundaryLine();
 createDivisionLine();
 createCenterCircle();
 createLane();
 createNBALane();
+createRestrictedArea();
 createBlocks();
 createKey();
 createThreePointLine();
+createHashMarks();

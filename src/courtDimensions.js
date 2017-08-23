@@ -1,16 +1,18 @@
 import { Vector3 } from 'babylonjs';
 
-const courtWidth = 50;
+export const courtWidth = 50;
 export const courtLength = 94;
 const laneWidth = 12;
 const laneWidthNBA = 16;
+export const restrictedAreaRadius = 4;
 const laneLength = 19;
 const rimRadius = 9/12;
 const rimAttachmentLength = 5.9/12;
-const backboardOffsetFromBaseline = 4;
+export const backboardOffsetFromBaseline = 4;
 export const threePointLineRadius = 23.9;
 export const threePointLineRadiusAtBaseline = 22;
 export const threePointLineOffsetFromBaseline = 14;
+export const hashMarkZ = courtLength / 2 - 28;
 const oneInch = 1/12;
 export const lineWidth = oneInch * 3;
 
