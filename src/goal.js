@@ -7,6 +7,8 @@ import {
   lineWidth,
   courtLength,
   backboardOffsetFromBaseline,
+  centerOfHoopProjectedToFloor,
+  rimRadius,
 } from './courtDimensions.js';
 
 const backboardZ = courtLength / 2 - backboardOffsetFromBaseline;
@@ -176,5 +178,14 @@ function paintWindow() {
   });
 }
 
+function createHoops() {
+  const hoop = Mesh.CreateTorus('hoop', rimRadius * 2, 1 / 12, 20, scene);
+  hoop.position = new Vector3(0, 10, centerOfHoopProjectedToFloor.z);
+
+  const reflectedHoop = Mesh.CreateTorus('hoop', rimRadius * 2, 1 / 12, 20, scene);
+  reflectedHoop.position = new Vector3(0, 10, -1 * centerOfHoopProjectedToFloor.z);
+}
+
 paintBackboardOutline();
 paintWindow();
+createHoops();
